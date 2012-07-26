@@ -31,13 +31,27 @@ namespace XapNote
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            Uri current;
-            if (settings.TryGetValue<Uri>("currentUri", out current))
+            //Uri current;
+            //if (settings.TryGetValue<Uri>("currentUri", out current))
+            //{
+            //    NavigationService.Navigate(current);
+            //    settings.Remove("currentUri");
+            //}
+            string state = "";
+            if (settings.Contains("state"))
             {
-                NavigationService.Navigate(current);
-                settings.Remove("currentUri");
+                if (settings.TryGetValue<string>("state", out state))
+                {
+                    if (state == "add")
+                    {
+                        NavigationService.Navigate(new Uri("/XapNote;component/Add.xaml",UriKind.Relative));
+                    }
+                    else if(state == "edit")
+                    {
+                        NavigationService.Navigate(new Uri("/XapNote;component/ViewEdit.xaml", UriKind.Relative));
+                    }
+                }
             }
-
             BindList();
         }
 

@@ -20,6 +20,7 @@ namespace XapNote
     public partial class Add : PhoneApplicationPage
     {
         private string location = "";
+        private IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
         public Add()
         {
             InitializeComponent();
@@ -82,6 +83,10 @@ namespace XapNote
 
         private void navigateBack()
         {
+            // Reset state in appSettings
+            settings["state"] = "";
+            settings["content"] = "";
+
             NavigationService.GoBack();
             //NavigationService.Navigate(new Uri("/XapNote;component/MainPage.xaml",UriKind.Relative));
             //NavigationService.RemoveBackEntry();
@@ -89,39 +94,66 @@ namespace XapNote
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            editTextBox.Focus();
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            string context;
-            if (settings.TryGetValue<string>("context", out context))
+            string state = "";
+
+            if (settings.Contains("state"))
             {
-                editTextBox.Text = context;
-                settings.Clear();
+                if (settings.TryGetValue<string>("state", out state))
+                {
+                    if (state == "add")
+                    {
+                        string content = "";
+                        if (settings.Contains("content"))
+                        {
+                            if (settings.TryGetValue<string>("content", out content))
+                            {
+                                editTextBox.Text = content;
+                            }
+                        }
+                    }
+                }
             }
+
+            settings["state"] = "add";
+            settings["content"] = editTextBox.Text;
+            editTextBox.Focus();
+            editTextBox.SelectionStart = editTextBox.Text.Length;
+            //string content;
+            //if (settings.TryGetValue<string>("content", out content))
+            //{
+            //    editTextBox.Text = content;
+            //    settings.Clear();
+            //}
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            base.OnNavigatingFrom(e);
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            Uri uri = new Uri(NavigationService.CurrentSource.ToString());
-            string context = editTextBox.Text;
-            if (settings.TryGetValue<Uri>("currentUri", out uri))
-            {
-                settings["currentUri"] = uri;
-            }
-            else
-            {
-                settings.Add("currentUri", NavigationService.CurrentSource);
-            }
+            //base.OnNavigatingFrom(e);
+            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            //Uri uri = new Uri(NavigationService.CurrentSource.ToString());
+            //string content = editTextBox.Text;
+            //if (settings.TryGetValue<Uri>("currentUri", out uri))
+            //{
+            //    settings["currentUri"] = uri;
+            //}
+            //else
+            //{
+            //    settings.Add("currentUri", NavigationService.CurrentSource);
+            //}
 
-            if (settings.TryGetValue<string>("context", out context))
-            {
-                settings["context"] = context;
-            }
-            else
-            {
-                settings.Add("context", context);
-            }
+            //if (settings.TryGetValue<string>("content", out content))
+            //{
+            //    settings["content"] = content;
+            //}
+            //else
+            //{
+            //    settings.Add("content", content);
+            //}
+        }
+
+        private void editTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            settings["content"] = editTextBox.Text;
         }
     }
 }

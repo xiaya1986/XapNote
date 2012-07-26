@@ -37,7 +37,8 @@
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch"
                      TextWrapping="Wrap"
-                     Visibility="Collapsed" />
+                     Visibility="Collapsed" 
+                     TextChanged="editTextBox_TextChanged" />
             <Canvas Name="confirmDialog"
                     Background="Red"
                     HorizontalAlignment="Left"

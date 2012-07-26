@@ -18,7 +18,7 @@ namespace XapNote
     public partial class ViewEdit : PhoneApplicationPage
     {
         private string fileName = "";
-
+        private IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
         public ViewEdit()
         {
             InitializeComponent();
@@ -33,9 +33,7 @@ namespace XapNote
         {
             if (displayTextBlock.Visibility==Visibility.Visible)
             {
-                editTextBox.Text = displayTextBlock.Text;
-                displayTextBlock.Visibility = Visibility.Collapsed;
-                editTextBox.Visibility = Visibility.Visible;
+                bindEdit(displayTextBlock.Text);
             }
         }
 
@@ -66,17 +64,87 @@ namespace XapNote
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            string context;
-            if (settings.TryGetValue<string>("context", out context))
+            string state = "";
+            if (settings.Contains("state"))
             {
-                displayTextBlock.Text = context;
-                settings.Clear();
+                if (settings.TryGetValue<string>("state", out state))
+                {
+                    if (state == "edit")
+                    {
+                        string content = "";
+                        if (settings.Contains("content"))
+                        {
+                            if (settings.TryGetValue<string>("content", out content))
+                            {
+                                bindEdit(content);
+                            }
+                            if (settings.TryGetValue<string>("fileName", out content))
+                            {
+                                fileName = content;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        bindView();
+                    }
+                }
             }
+            else
+            {
+                bindView();
+            }
+           
+            //string content;
+            //if (settings.TryGetValue<string>("content", out content))
+            //{
+            //    displayTextBlock.Text = content;
+            //    settings.Clear();
+            //}
+        }
+
+        private void bindView()
+        {
+            fileName = NavigationContext.QueryString["id"];
+            var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
+
+            try
+            {
+                using (var file = appStorage.OpenFile(fileName, FileMode.Open))
+                {
+                    using (StreamReader sr = new StreamReader(file))
+                    {
+                        displayTextBlock.Text = sr.ReadToEnd();
+                    }
+                }
+            }
+            catch (IsolatedStorageException ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void bindEdit(string content)
+        {
+            editTextBox.Text = content;
+            displayTextBlock.Visibility = Visibility.Collapsed;
+            editTextBox.Visibility = Visibility.Visible;
+
+            editTextBox.Focus();
+            editTextBox.SelectionStart = content.Length;
+
+            settings["state"] = "edit";
+            settings["content"] = content;
+            settings["fileName"] = fileName;
         }
 
         private void navigateBack()
         {
+            settings["state"] = "";
+            settings["content"] = "";
+            settings["fileName"] = "";
+
             NavigationService.GoBack();
             //NavigationService.Navigate(new Uri("/XapNote;component/MainPage.xaml", UriKind.Relative));
             //NavigationService.RemoveBackEntry();
@@ -96,52 +164,57 @@ namespace XapNote
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
-            fileName = NavigationContext.QueryString["id"];
-            var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
+            //base.OnNavigatedTo(e);
+            //fileName = NavigationContext.QueryString["id"];
+            //var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
 
-            try
-            {
-                using (var file = appStorage.OpenFile(fileName, FileMode.Open))
-                {
-                    using (StreamReader sr = new StreamReader(file))
-                    {
-                        displayTextBlock.Text = sr.ReadToEnd();
-                    }
-                }
-            }
-            catch (IsolatedStorageException ex)
-            {
+            //try
+            //{
+            //    using (var file = appStorage.OpenFile(fileName, FileMode.Open))
+            //    {
+            //        using (StreamReader sr = new StreamReader(file))
+            //        {
+            //            displayTextBlock.Text = sr.ReadToEnd();
+            //        }
+            //    }
+            //}
+            //catch (IsolatedStorageException ex)
+            //{
 
-                MessageBox.Show(ex.Message);
-            }
+            //    MessageBox.Show(ex.Message);
+            //}
 
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            base.OnNavigatingFrom(e);
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            Uri uri = new Uri(NavigationService.CurrentSource.ToString());
-            string context = displayTextBlock.Text == ""? displayTextBlock.Text:editTextBox.Text;
-            if (settings.TryGetValue<Uri>("currentUri", out uri))
-            {
-                settings["currentUri"] = uri;
+            //base.OnNavigatingFrom(e);
+            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            //Uri uri = new Uri(NavigationService.CurrentSource.ToString());
+            //string content = displayTextBlock.Text == ""? displayTextBlock.Text:editTextBox.Text;
+            //if (settings.TryGetValue<Uri>("currentUri", out uri))
+            //{
+            //    settings["currentUri"] = uri;
 
-            }
-            else
-            {
-                settings.Add("currentUri", NavigationService.CurrentSource);
-            }
+            //}
+            //else
+            //{
+            //    settings.Add("currentUri", NavigationService.CurrentSource);
+            //}
 
-            if (settings.TryGetValue<string>("context", out context))
-            {
-                settings["context"] = context;
-            }
-            else
-            {
-                settings.Add("context", displayTextBlock.Text == "" ? displayTextBlock.Text : editTextBox.Text);
-            }
+            //if (settings.TryGetValue<string>("content", out content))
+            //{
+            //    settings["content"] = content;
+            //}
+            //else
+            //{
+            //    settings.Add("content", displayTextBlock.Text == "" ? displayTextBlock.Text : editTextBox.Text);
+            //}
+        }
+
+        private void editTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            settings["content"] = editTextBox.Text;
         }
     }
 }
