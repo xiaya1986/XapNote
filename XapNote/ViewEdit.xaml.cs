@@ -72,16 +72,15 @@ namespace XapNote
                     if (state == "edit")
                     {
                         string content = "";
-                        if (settings.Contains("content"))
+
+                        if (settings.TryGetValue<string>("fileName", out content))
                         {
-                            if (settings.TryGetValue<string>("content", out content))
-                            {
-                                bindEdit(content);
-                            }
-                            if (settings.TryGetValue<string>("fileName", out content))
-                            {
-                                fileName = content;
-                            }
+                            fileName = content;
+                        }
+
+                        if (settings.TryGetValue<string>("content", out content))
+                        {
+                            bindEdit(content);
                         }
                     }
                     else
@@ -94,6 +93,7 @@ namespace XapNote
             {
                 bindView();
             }
+
            
             //string content;
             //if (settings.TryGetValue<string>("content", out content))
@@ -136,7 +136,11 @@ namespace XapNote
 
             settings["state"] = "edit";
             settings["content"] = content;
-            settings["fileName"] = fileName;
+            //if (fileName != "")
+            //{
+                settings["fileName"] = fileName;
+            //}
+            
         }
 
         private void navigateBack()
@@ -188,6 +192,8 @@ namespace XapNote
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
+          
+
             //base.OnNavigatingFrom(e);
             //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
             //Uri uri = new Uri(NavigationService.CurrentSource.ToString());
@@ -215,6 +221,15 @@ namespace XapNote
         private void editTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             settings["content"] = editTextBox.Text;
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            settings["state"] = "";
+            settings["content"] = "";
+            settings["fileName"] = "";
         }
     }
 }

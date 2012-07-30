@@ -155,5 +155,14 @@ namespace XapNote
         {
             settings["content"] = editTextBox.Text;
         }
+
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            settings["state"] = "";
+            settings["content"] = "";
+        }
     }
 }
