@@ -31,12 +31,6 @@ namespace XapNote
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            //Uri current;
-            //if (settings.TryGetValue<Uri>("currentUri", out current))
-            //{
-            //    NavigationService.Navigate(current);
-            //    settings.Remove("currentUri");
-            //}
             string state = "";
             if (settings.Contains("state"))
             {
@@ -62,33 +56,40 @@ namespace XapNote
 
             List<Note> notes = new List<Note>();
 
-            foreach (string file in fileList)
+            try
             {
-                if (file != "__ApplicationSettings")
+                foreach (string file in fileList)
                 {
-                    string fileName = file;
-                    string year = file.Substring(0, 4);
-                    string month = fileName.Substring(5, 2);
-                    string day = fileName.Substring(8, 2);
-                    string hour = fileName.Substring(11, 2);
-                    string minute = fileName.Substring(14, 2);
-                    string second = fileName.Substring(17, 2);
-
-                    DateTime dateCreate = new DateTime(int.Parse(year), int.Parse(month), int.Parse(day),
-                                                       int.Parse(hour), int.Parse(minute), int.Parse(second));
-                    string location = file.Substring(20);
-                    location = location.Replace("_", ", ");
-                    location = location.Replace("-", " ");
-                    location = location.Substring(0, location.Length - 4);
-
-                    notes.Add(new Note()
+                    if (file != "__ApplicationSettings")
                     {
-                        Location = location,
-                        DateCreated = dateCreate.ToLongDateString(),
-                        FileName = fileName
-                    });
+                        string fileName = file;
+                        string year = file.Substring(0, 4);
+                        string month = fileName.Substring(5, 2);
+                        string day = fileName.Substring(8, 2);
+                        string hour = fileName.Substring(11, 2);
+                        string minute = fileName.Substring(14, 2);
+                        string second = fileName.Substring(17, 2);
+
+                        DateTime dateCreate = new DateTime(int.Parse(year), int.Parse(month), int.Parse(day),
+                                                           int.Parse(hour), int.Parse(minute), int.Parse(second));
+                        string location = file.Substring(20);
+                        location = location.Replace("_", ", ");
+                        location = location.Replace("-", " ");
+                        location = location.Substring(0, location.Length - 4);
+
+                        notes.Add(new Note()
+                        {
+                            Location = location,
+                            DateCreated = dateCreate.ToLongDateString(),
+                            FileName = fileName
+                        });
+                    }
+
                 }
-   
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
 
             noteListBox.ItemsSource = notes;

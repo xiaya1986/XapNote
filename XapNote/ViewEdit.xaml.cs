@@ -41,14 +41,21 @@ namespace XapNote
         {
             if (editTextBox.Visibility == Visibility.Visible)
             {
-                // Save 
-                var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
-                using (var file = appStorage.OpenFile(fileName,FileMode.Create))
+                try
                 {
-                    using (StreamWriter sw = new StreamWriter(file))
+                    // Save 
+                    var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
+                    using (var file = appStorage.OpenFile(fileName, FileMode.Create))
                     {
-                        sw.WriteLine(editTextBox.Text);
+                        using (StreamWriter sw = new StreamWriter(file))
+                        {
+                            sw.WriteLine(editTextBox.Text);
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
 
                 displayTextBlock.Text = editTextBox.Text;
@@ -93,14 +100,6 @@ namespace XapNote
             {
                 bindView();
             }
-
-           
-            //string content;
-            //if (settings.TryGetValue<string>("content", out content))
-            //{
-            //    displayTextBlock.Text = content;
-            //    settings.Clear();
-            //}
         }
 
         private void bindView()
@@ -136,10 +135,10 @@ namespace XapNote
 
             settings["state"] = "edit";
             settings["content"] = content;
-            //if (fileName != "")
-            //{
+            if (fileName != "")
+            {
                 settings["fileName"] = fileName;
-            //}
+            }
             
         }
 
@@ -150,8 +149,6 @@ namespace XapNote
             settings["fileName"] = "";
 
             NavigationService.GoBack();
-            //NavigationService.Navigate(new Uri("/XapNote;component/MainPage.xaml", UriKind.Relative));
-            //NavigationService.RemoveBackEntry();
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
@@ -162,60 +159,16 @@ namespace XapNote
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
             var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
-            appStorage.DeleteFile(fileName);
+            try
+            {
+                appStorage.DeleteFile(fileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             navigateBack();
-        }
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            //base.OnNavigatedTo(e);
-            //fileName = NavigationContext.QueryString["id"];
-            //var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
-
-            //try
-            //{
-            //    using (var file = appStorage.OpenFile(fileName, FileMode.Open))
-            //    {
-            //        using (StreamReader sr = new StreamReader(file))
-            //        {
-            //            displayTextBlock.Text = sr.ReadToEnd();
-            //        }
-            //    }
-            //}
-            //catch (IsolatedStorageException ex)
-            //{
-
-            //    MessageBox.Show(ex.Message);
-            //}
-
-        }
-
-        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-          
-
-            //base.OnNavigatingFrom(e);
-            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            //Uri uri = new Uri(NavigationService.CurrentSource.ToString());
-            //string content = displayTextBlock.Text == ""? displayTextBlock.Text:editTextBox.Text;
-            //if (settings.TryGetValue<Uri>("currentUri", out uri))
-            //{
-            //    settings["currentUri"] = uri;
-
-            //}
-            //else
-            //{
-            //    settings.Add("currentUri", NavigationService.CurrentSource);
-            //}
-
-            //if (settings.TryGetValue<string>("content", out content))
-            //{
-            //    settings["content"] = content;
-            //}
-            //else
-            //{
-            //    settings.Add("content", displayTextBlock.Text == "" ? displayTextBlock.Text : editTextBox.Text);
-            //}
         }
 
         private void editTextBox_TextChanged(object sender, TextChangedEventArgs e)

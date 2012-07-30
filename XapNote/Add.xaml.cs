@@ -24,23 +24,30 @@ namespace XapNote
         public Add()
         {
             InitializeComponent();
-
-            GeoCoordinateWatcher myWatcher = new GeoCoordinateWatcher();
-
-            var myPosition = myWatcher.Position;
-
-            double latitude = 47.674;
-            double longitude = -122.12;
-
-            if (!myPosition.Location.IsUnknown)
+            try
             {
-                latitude = myPosition.Location.Latitude;
-                longitude = myPosition.Location.Longitude;
-            }
+                GeoCoordinateWatcher myWatcher = new GeoCoordinateWatcher();
 
-            myTerraService.TerraServiceSoapClient client = new myTerraService.TerraServiceSoapClient();
-            client.ConvertLonLatPtToNearestPlaceCompleted += new EventHandler<myTerraService.ConvertLonLatPtToNearestPlaceCompletedEventArgs>(client_ConvertLonLatPtToNearestPlaceCompleted);
-            client.ConvertLonLatPtToNearestPlaceAsync(new myTerraService.LonLatPt() { Lat = latitude, Lon = longitude });
+                var myPosition = myWatcher.Position;
+
+                double latitude = 47.674;
+                double longitude = -122.12;
+
+                if (!myPosition.Location.IsUnknown)
+                {
+                    latitude = myPosition.Location.Latitude;
+                    longitude = myPosition.Location.Longitude;
+                }
+
+                myTerraService.TerraServiceSoapClient client = new myTerraService.TerraServiceSoapClient();
+                client.ConvertLonLatPtToNearestPlaceCompleted += new EventHandler<myTerraService.ConvertLonLatPtToNearestPlaceCompletedEventArgs>(client_ConvertLonLatPtToNearestPlaceCompleted);
+                client.ConvertLonLatPtToNearestPlaceAsync(new myTerraService.LonLatPt() { Lat = latitude, Lon = longitude });
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         void client_ConvertLonLatPtToNearestPlaceCompleted(object sender, myTerraService.ConvertLonLatPtToNearestPlaceCompletedEventArgs e)
@@ -65,13 +72,21 @@ namespace XapNote
 
             // Write file into isolatedStorage
             var appStorage = IsolatedStorageFile.GetUserStoreForApplication();
-            using (var fileStream = appStorage.OpenFile(sb.ToString(), FileMode.Create))
+            try
             {
-                using (StreamWriter sw = new StreamWriter(fileStream))
+                using (var fileStream = appStorage.OpenFile(sb.ToString(), FileMode.Create))
                 {
-                    sw.WriteLine(editTextBox.Text);
+                    using (StreamWriter sw = new StreamWriter(fileStream))
+                    {
+                        sw.WriteLine(editTextBox.Text);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
 
             navigateBack();
         }
@@ -88,8 +103,6 @@ namespace XapNote
             settings["content"] = "";
 
             NavigationService.GoBack();
-            //NavigationService.Navigate(new Uri("/XapNote;component/MainPage.xaml",UriKind.Relative));
-            //NavigationService.RemoveBackEntry();
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
@@ -118,37 +131,6 @@ namespace XapNote
             settings["content"] = editTextBox.Text;
             editTextBox.Focus();
             editTextBox.SelectionStart = editTextBox.Text.Length;
-            //string content;
-            //if (settings.TryGetValue<string>("content", out content))
-            //{
-            //    editTextBox.Text = content;
-            //    settings.Clear();
-            //}
-        }
-
-        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-            //base.OnNavigatingFrom(e);
-            //IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            //Uri uri = new Uri(NavigationService.CurrentSource.ToString());
-            //string content = editTextBox.Text;
-            //if (settings.TryGetValue<Uri>("currentUri", out uri))
-            //{
-            //    settings["currentUri"] = uri;
-            //}
-            //else
-            //{
-            //    settings.Add("currentUri", NavigationService.CurrentSource);
-            //}
-
-            //if (settings.TryGetValue<string>("content", out content))
-            //{
-            //    settings["content"] = content;
-            //}
-            //else
-            //{
-            //    settings.Add("content", content);
-            //}
         }
 
         private void editTextBox_TextChanged(object sender, TextChangedEventArgs e)
