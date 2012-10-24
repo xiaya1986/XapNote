@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{ef3d2a8a-7335-4463-b883-88847d38d20a}" Title="Xap Notes" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="Ken Xu" Description="Create notes that include the Geo location where the note was created." Publisher="GTCC">
+  <App xmlns="" ProductID="{ef3d2a8a-7335-4463-b883-88847d38d20a}" Title="Smart Post-it" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="Ken Xu" Description="Create notes that include the Geo location where the note was created." Publisher="GTCC">
     <IconPath IsRelative="true" IsResource="false">XapNote_62X62.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_GAMERSERVICES"/>
@@ -27,7 +27,7 @@
         <TemplateType5>
           <BackgroundImageURI IsRelative="true" IsResource="false">XapNote_173X173.png</BackgroundImageURI>
           <Count>0</Count>
-          <Title>Xap Notes</Title>
+          <Title>Smart Post-it</Title>
         </TemplateType5>
       </PrimaryToken>
     </Tokens>

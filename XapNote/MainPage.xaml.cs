@@ -25,7 +25,11 @@ namespace XapNote
 
         private void AppBar_Add_CLick(object sender, EventArgs e)
         {
-            NavigationService.Navigate(new Uri("/XapNote;component/Add.xaml", UriKind.Relative));
+            NavigationService.Navigate(
+                new Uri(
+                    "/XapNote;component/Add.xaml", 
+                    UriKind.Relative
+                ));
         }
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
@@ -38,11 +42,19 @@ namespace XapNote
                 {
                     if (state == "add")
                     {
-                        NavigationService.Navigate(new Uri("/XapNote;component/Add.xaml",UriKind.Relative));
+                        NavigationService.Navigate(
+                            new Uri(
+                                "/XapNote;component/Add.xaml",
+                                UriKind.Relative
+                            ));
                     }
                     else if(state == "edit")
                     {
-                        NavigationService.Navigate(new Uri("/XapNote;component/ViewEdit.xaml", UriKind.Relative));
+                        NavigationService.Navigate(
+                            new Uri(
+                                "/XapNote;component/ViewEdit.xaml", 
+                                UriKind.Relative
+                            ));
                     }
                 }
             }
@@ -70,8 +82,16 @@ namespace XapNote
                         string minute = fileName.Substring(14, 2);
                         string second = fileName.Substring(17, 2);
 
-                        DateTime dateCreate = new DateTime(int.Parse(year), int.Parse(month), int.Parse(day),
-                                                           int.Parse(hour), int.Parse(minute), int.Parse(second));
+                        DateTime dateCreate = 
+                            new DateTime(
+                                int.Parse(year), 
+                                int.Parse(month), 
+                                int.Parse(day),
+                                int.Parse(hour), 
+                                int.Parse(minute), 
+                                int.Parse(second)
+                            );
+
                         string location = file.Substring(20);
                         location = location.Replace("_", ", ");
                         location = location.Replace("-", " ");
@@ -98,7 +118,11 @@ namespace XapNote
         private void noteLocation_Click(object sender, RoutedEventArgs e)
         {
             HyperlinkButton clickLink = (HyperlinkButton)sender;
-            string uri = String.Format("/XapNote;component/ViewEdit.xaml?id={0}",clickLink.Tag);
+            string uri = 
+                String.Format(
+                    "/XapNote;component/ViewEdit.xaml?id={0}",
+                    clickLink.Tag
+                );
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 

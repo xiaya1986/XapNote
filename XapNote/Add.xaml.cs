@@ -26,22 +26,33 @@ namespace XapNote
             InitializeComponent();
             try
             {
-                GeoCoordinateWatcher myWatcher = new GeoCoordinateWatcher();
+                //GeoCoordinateWatcher myWatcher = new GeoCoordinateWatcher();
 
-                var myPosition = myWatcher.Position;
+                //var myPosition = myWatcher.Position;
 
-                double latitude = 47.674;
-                double longitude = -122.12;
+                //double latitude = 47.674;
+                //double longitude = -122.12;
 
-                if (!myPosition.Location.IsUnknown)
-                {
-                    latitude = myPosition.Location.Latitude;
-                    longitude = myPosition.Location.Longitude;
-                }
+                //if (!myPosition.Location.IsUnknown)
+                //{
+                //    latitude = myPosition.Location.Latitude;
+                //    longitude = myPosition.Location.Longitude;
+                //}
 
-                myTerraService.TerraServiceSoapClient client = new myTerraService.TerraServiceSoapClient();
-                client.ConvertLonLatPtToNearestPlaceCompleted += new EventHandler<myTerraService.ConvertLonLatPtToNearestPlaceCompletedEventArgs>(client_ConvertLonLatPtToNearestPlaceCompleted);
-                client.ConvertLonLatPtToNearestPlaceAsync(new myTerraService.LonLatPt() { Lat = latitude, Lon = longitude });
+                //myTerraService.TerraServiceSoapClient client = 
+                //    new myTerraService.TerraServiceSoapClient();
+
+                //client.ConvertLonLatPtToNearestPlaceCompleted += 
+                //    new EventHandler<myTerraService.ConvertLonLatPtToNearestPlaceCompletedEventArgs>(
+                //        client_ConvertLonLatPtToNearestPlaceCompleted);
+
+                //client.ConvertLonLatPtToNearestPlaceAsync(
+                //    new myTerraService.LonLatPt() 
+                //    { 
+                //        Lat = latitude, 
+                //        Lon = longitude 
+                //    }
+                //);
 
             }
             catch (Exception ex)
@@ -50,7 +61,9 @@ namespace XapNote
             }
         }
 
-        void client_ConvertLonLatPtToNearestPlaceCompleted(object sender, myTerraService.ConvertLonLatPtToNearestPlaceCompletedEventArgs e)
+        void client_ConvertLonLatPtToNearestPlaceCompleted(
+            object sender, 
+            myTerraService.ConvertLonLatPtToNearestPlaceCompletedEventArgs e)
         {
             location = e.Result;
         }
@@ -59,7 +72,7 @@ namespace XapNote
         {
             if (location.Trim().Length == 0)
             {
-                location = "Unknow";
+                location = "Pudong, Shanghai, China";
             }
             
             // Construct the name of the file

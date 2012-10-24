@@ -22,7 +22,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="ApplicationTitle" Text="XAP NOTE" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="ApplicationTitle" Text="Smart Post-it" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock x:Name="PageTitle" Text="your notes" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
@@ -76,11 +76,18 @@
                                Foreground="Black"
                                FontSize="24"
                                TextWrapping="Wrap"
-                               Height="500"
-                               >
-                    This is Cool
-                    <LineBreak></LineBreak>
-                    Nice
+                               Height="500" Margin="20,0,0,0">
+                        Smart Post-it for Windows Phone
+                        <LineBreak/>
+                        Version 1.2
+                        <LineBreak/>
+                        <LineBreak/>
+                        For any issues and suggestions, welcome to contact us:
+                        <LineBreak/>
+                        mailto:Yinjie.Xu@cn.unisys.com
+                        <LineBreak/>
+                        <LineBreak/>
+                        GTCC Windows Phone Interest Group
                     </TextBlock>
                 </ScrollViewer>
 
